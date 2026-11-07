@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="mb-3">{{ title }}</h4>
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Roll Number *</label>
+                        <input type="text" name="roll_no" class="form-control"
+                               value="{{ student.roll_no if student else '' }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" name="name" class="form-control"
+                               value="{{ student.name if student else '' }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control"
+                               value="{{ student.email if student and student.email else '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phone</label>
+                        <input type="text" name="phone" class="form-control"
+                               value="{{ student.phone if student and student.phone else '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Department</label>
+                        <input type="text" name="department" class="form-control"
+                               value="{{ student.department if student and student.department else '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Year</label>
+                        <input type="number" name="year" min="1" max="5" class="form-control"
+                               value="{{ student.year if student and student.year else '' }}">
+                    </div>
+                    <button class="btn btn-success">Save</button>
+                    <a href="{{ url_for('students') }}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

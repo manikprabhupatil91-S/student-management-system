@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Enter Marks</h3>
+    <a href="{{ url_for('marks_report') }}" class="btn btn-outline-dark">View Results</a>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Course</label>
+                <select name="course_id" class="form-select" required>
+                    <option value="">-- Select course --</option>
+                    {% for c in courses %}
+                    <option value="{{ c.id }}" {% if course and course.id == c.id %}selected{% endif %}>
+                        {{ c.course_code }} - {{ c.course_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Exam</label>
+                <select name="exam_type" class="form-select">
+                    {% for e in exam_types %}
+                    <option value="{{ e }}" {% if e == exam_type %}selected{% endif %}>{{ e }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button class="btn btn-primary w-100">Load</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if course %}
+<div class="card shadow-sm">
+    <div class="card-header">
+        {{ course.course_code }} - {{ course.course_name }} | {{ exam_type }} (out of {{ max_marks }})
+    </div>
+    <form method="POST" action="{{ url_for('marks') }}">
+        <input type="hidden" name="course_id" value="{{ course.id }}">
+        <input type="hidden" name="exam_type" value="{{ exam_type }}">
+        <div class="table-responsive">
+            <table class="table table-striped mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Roll No</th>
+                        <th>Name</th>
+                        <th style="width: 200px;">Marks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in enrolled %}
+                    <tr>
+                        <td>{{ s.roll_no }}</td>
+                        <td>{{ s.name }}</td>
+                        <td>
+                            <input type="number" step="0.5" min="0" max="{{ max_marks }}"
+                                   name="marks_{{ s.id }}" class="form-control"
+                                   value="{{ existing.get(s.id, '') }}">
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3" class="text-center text-muted py-4">
+                            No students enrolled in this course yet
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if enrolled %}
+        <div class="card-body">
+            <button class="btn btn-success">Save Marks</button>
+        </div>
+        {% endif %}
+    </form>
+</div>
+{% endif %}
+{% endblock %}

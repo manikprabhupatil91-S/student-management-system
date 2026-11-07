@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Attendance Report</h3>
+    <a href="{{ url_for('attendance') }}" class="btn btn-outline-dark">Mark Attendance</a>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-9">
+                <select name="course_id" class="form-select" required>
+                    <option value="">-- Select course --</option>
+                    {% for c in courses %}
+                    <option value="{{ c.id }}" {% if course and course.id == c.id %}selected{% endif %}>
+                        {{ c.course_code }} - {{ c.course_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100">Show Report</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if course %}
+<div class="card shadow-sm">
+    <div class="card-header">{{ course.course_code }} - {{ course.course_name }}</div>
+    <div class="table-responsive">
+        <table class="table table-striped mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Roll No</th>
+                    <th>Name</th>
+                    <th>Classes Held</th>
+                    <th>Present</th>
+                    <th>Percentage</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in rows %}
+                <tr>
+                    <td>{{ r.student.roll_no }}</td>
+                    <td>{{ r.student.name }}</td>
+                    <td>{{ r.total }}</td>
+                    <td>{{ r.present }}</td>
+                    <td>
+                        {% if r.percent is none %}
+                            -
+                        {% elif r.percent < 75 %}
+                            <span class="badge text-bg-danger">{{ r.percent }}%</span>
+                        {% else %}
+                            <span class="badge text-bg-success">{{ r.percent }}%</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">No enrolled students</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

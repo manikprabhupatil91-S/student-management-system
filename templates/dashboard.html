@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-4">Welcome, {{ current_user.username }}</h3>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-bg-primary mb-3">
+            <div class="card-body">
+                <h6>Total Students</h6>
+                <h2>{{ student_count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-success mb-3">
+            <div class="card-body">
+                <h6>Total Courses</h6>
+                <h2>{{ course_count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-info mb-3">
+            <div class="card-body">
+                <h6>Enrollments</h6>
+                <h2>{{ enrollment_count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-warning mb-3">
+            <div class="card-body">
+                <h6>Today's Attendance</h6>
+                <h2>{{ present_today }} P / {{ absent_today }} A</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">Top 3 students (total marks, all courses)</div>
+            <ul class="list-group list-group-flush">
+                {% for student, total in top_students %}
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>{{ loop.index }}. {{ student.name }} ({{ student.roll_no }})</span>
+                    <strong>{{ total }}</strong>
+                </li>
+                {% else %}
+                <li class="list-group-item text-muted">No marks entered yet</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">Low attendance (below 75%)</div>
+            <ul class="list-group list-group-flush">
+                {% for item in low_attendance %}
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>{{ item.student.name }} ({{ item.student.roll_no }})</span>
+                    <span class="badge text-bg-danger">{{ item.percent }}%</span>
+                </li>
+                {% else %}
+                <li class="list-group-item text-muted">No students below 75%</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<a href="{{ url_for('students') }}" class="btn btn-dark">Manage Students</a>
+<a href="{{ url_for('courses') }}" class="btn btn-secondary">Manage Courses</a>
+<a href="{{ url_for('change_password') }}" class="btn btn-outline-dark">Change Password</a>
+{% endblock %}
